@@ -7,12 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const shapeSelect = document.getElementById('shapeSelect');
 
   const WIDTH_FRACTIONS = {
-    "inteiro.png": 2,
+    "inteiro.png": 1,
     "dois.png": 1,
     "tres.png": 1 / 2,
-    "quatro.png": 1 / 3,
-    "seis.png": 1 / 4,
-    "oito.png": 1 / 6
+    "quatro.png": 1 / 4,
+    "seis.png": 1 / 6,
+    "oito.png": 1 / 12
   };
 
   function getMatrixOffsets() {
@@ -27,35 +27,27 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  /* 🔷 TAMANHO — retângulo tem fator visual 1/2 */
   function calcSize(src){
     const offs = getMatrixOffsets();
-    const key  = src.split('/').pop();
-
-    let frac = WIDTH_FRACTIONS[key] || 1;
-
-    // 👉 ajuste visual APENAS para retângulo
-    if (shapeSelect.value === 'rect') {
-      frac = frac / 2;
-    }
+    const key = src.split('/').pop();
 
     return {
-      width: offs.width * frac,
+      width: offs.width * (WIDTH_FRACTIONS[key] || 1),
       height: offs.height / 6
     };
   }
 
-  /* 🔷 FORMAS */
+  /* 🔷 FORMAS — baseadas nas antigas + espelhamentos */
   function applyShape(el){
     const shape = shapeSelect.value;
 
     switch(shape){
 
-      case 'rect':
+      case 'rect': // retangular original
         el.style.clipPath = 'none';
         break;
 
-      case 'diag-desc': // ↘
+      case 'diag-desc': // ↘ original
         el.style.clipPath = `
           polygon(
             0 0,
@@ -65,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         break;
 
-      case 'diag-asc': // ↗
+      case 'diag-asc': // ↗ original
         el.style.clipPath = `
           polygon(
             100% 0,
@@ -75,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         break;
 
-      case 'horiz': // metade inferior
+      case 'horiz': // horizontal (metade inferior do retângulo)
         el.style.clipPath = `
           polygon(
             0 50%,
@@ -86,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         break;
 
-      case 'diag-down-left': // ↙
+      case 'diag-down-left': // ↙ (oposta da ↗)
         el.style.clipPath = `
           polygon(
             0 0,
@@ -96,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         break;
 
-      case 'diag-up-left': // ↖
+      case 'diag-up-left': // ↖ (oposta da ↘)
         el.style.clipPath = `
           polygon(
             100% 0,
